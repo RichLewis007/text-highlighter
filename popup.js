@@ -62,14 +62,14 @@ function initializeI18n() {
   });
 }
 
-// 테마 변경 감지 및 처리
+// 테마 변경 감지 및 처리 - Detect and handle theme changes
 function initializeThemeWatcher() {
   const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
   
-  // 초기 테마 적용
+  // 초기 테마 적용 - Apply initial theme
   updateTheme(darkModeQuery.matches);
   
-  // 테마 변경 감지
+  // 테마 변경 감지 - Detect theme changes
   darkModeQuery.addEventListener('change', (e) => {
     updateTheme(e.matches);
   });
@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const result = await browserAPI.storage.local.get([currentUrl]);
     let highlights = result[currentUrl] || [];
 
-    // 그룹 구조이므로 position은 대표 span의 position 사용
+    // 그룹 구조이므로 position은 대표 span의 position 사용 - Use representative span position due to group structure
     highlights.sort((a, b) => {
       const posA = a.spans && a.spans[0] ? a.spans[0].position : 0;
       const posB = b.spans && b.spans[0] ? b.spans[0].position : 0;
@@ -239,7 +239,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     debugLog('Loaded highlights for popup (sorted by position):', highlights);
 
-    // Display highlight list (그룹 단위)
+    // Display highlight list (그룹 단위) - Display highlight list by group
     if (highlights.length > 0) {
       noHighlights.style.display = 'none';
       highlightsContainer.innerHTML = '';
@@ -327,12 +327,12 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
   });
 
-  // Delete highlight (그룹 단위)
+  // Delete highlight (그룹 단위) - Delete highlight by group
   async function deleteHighlight(groupId, url) {
     const response = await browserAPI.runtime.sendMessage({
       action: 'deleteHighlight',
       url: url,
-      groupId: groupId, // groupId로 삭제
+      groupId: groupId, // groupId로 삭제 - Delete by groupId
       notifyRefresh: true
     });
     if (response && response.success) {
@@ -394,7 +394,7 @@ document.addEventListener('DOMContentLoaded', async function () {
           if (tab.url && tab.url.startsWith(targetUrl)) {
             browserAPI.windows.update(win.id, {focused: true});
             browserAPI.tabs.update(tab.id, {active: true});
-            // 페이지 목록 갱신 메시지 전송
+            // 페이지 목록 갱신 메시지 전송 - Send message to refresh page list
             browserAPI.tabs.sendMessage(tab.id, {action: 'refreshPagesList'});
             found = true;
             break;

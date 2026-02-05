@@ -1,0 +1,296 @@
+###############################################################################
+# .cursorignore
+# Prevents Cursor (and some other AI tools) from seeing secrets, junk, and
+# huge dirs. Follows .gitignore style patterns.
+###############################################################################
+
+# Key ideas:
+# - All secrets and .env style files are hidden from Cursor.
+# - All huge junk dirs (node_modules, .venv, .next, dist, etc) are hidden.
+# - IDE folders are mostly hidden, with a few useful configs included back in.
+
+# A lot of AI agents and tools default to using .gitignore and/or .ignore when 
+#  building context. So:
+# - Put everything that is about build artifacts and deps in .gitignore.
+# - Put everything that is about secrets and privacy in .cursorignore first, 
+#   and optionally also in .gitignore if you do not want secrets ever committed.
+
+###############################################################################
+# 1. Secrets, credentials, and sensitive config
+###############################################################################
+
+# Generic env files
+.env
+.env.*
+*.env
+
+# Key / cert material
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+*.der
+*.jks
+*.keystore
+
+# Common secret/credential names
+secrets.*
+secret.*
+*secret*
+*password*
+*passwd*
+*token*
+*tokens*
+*apikey*
+*api_key*
+*api-key*
+*api-token*
+*auth*
+*credentials*.json
+*service-account*.json
+
+# Private config directories (tweak to match your layout)
+config/secrets/**
+config/private/**
+secrets/**
+private/**
+
+###############################################################################
+# 2. Build, dist, and generated output
+###############################################################################
+
+dist/
+build/
+out/
+target/
+coverage/
+htmlcov/
+.coverage
+*.coverage
+*.lcov
+reports/
+report/
+.cache/
+
+# Bundled / minified blobs
+*.min.js
+*.bundle.js
+*.map
+
+###############################################################################
+# 3. Dependencies and tool caches
+###############################################################################
+
+# Node / JS
+node_modules/
+bower_components/
+jspm_packages/
+.pnpm-store/
+.yarn/
+.yarn-cache/
+.yarnrc.yml
+.npm/
+.npm-cache/
+
+# Python envs and caches
+.venv/
+venv/
+venv-*/
+.nox/
+.tox/
+__pycache__/
+*.py[cod]
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.pyre/
+.dmypy.json
+uv.lock
+
+# Java, Rust, Go, etc
+.gradle/
+.gradle-cache/
+.mvn/
+target/
+out/
+.rustup/
+.cargo/
+go.sum
+go.work
+
+# Dart / Flutter / Webpack etc
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.flutter-*/
+.flutter-*/**
+.webpack/
+.next/
+.nuxt/
+.svelte-kit/
+.parcel-cache/
+.vite/
+.sass-cache/
+
+###############################################################################
+# 4. IDE / editor / tooling state
+###############################################################################
+
+# We hide most IDE dirs, but re-allow a few small config files that help AI.
+# Comment out the "!" lines if you want to hide everything.
+
+# VS Code
+.vscode/**
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# JetBrains / IntelliJ
+.idea/**
+!.idea/misc.xml
+!.idea/modules.xml
+!.idea/vcs.xml
+!.idea/runConfigurations/**
+
+# Other editor state
+.history/
+.vscode-server/
+.vscode-test/
+.cursor/
+*.sublime-workspace
+*.sublime-project
+
+# Obsidian vault internals (if this is a vault)
+.obsidian/**
+!.obsidian/app.json
+!.obsidian/workspace.json
+
+###############################################################################
+# 5. Logs and temp files
+###############################################################################
+
+*.log
+logs/
+log/
+*.tmp
+tmp/
+temp/
+temp-*/
+*.swp
+*.swo
+*.bak
+*.backup
+*~
+
+###############################################################################
+# 6. Large data, models, and media (adjust as needed)
+###############################################################################
+
+# Databases
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.mdb
+*.accdb
+
+# Data formats
+*.parquet
+*.feather
+*.orc
+*.hdf5
+*.h5
+*.arrow
+*.npz
+*.npy
+*.csv
+*.tsv
+data/**
+datasets/**
+dataset/**
+.raw-data/**
+raw-data/**
+
+# ML models and weights
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.model
+*.pb
+*.tflite
+*.onnx
+
+# Big media
+*.mp4
+*.mkv
+*.mov
+*.avi
+*.flv
+*.mp3
+*.wav
+*.flac
+*.ogg
+*.webm
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+*.rar
+
+assets/raw/**
+media/raw/**
+downloads/**
+
+###############################################################################
+# 7. OS and filesystem cruft
+###############################################################################
+
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+$RECYCLE.BIN/
+.Spotlight-V100/
+.Trashes/
+.fseventsd/
+.LSOverride
+
+###############################################################################
+# 8. VCS and backup junk
+###############################################################################
+
+.git/
+.git-*/
+.git/lfs/
+.git/worktrees/
+.git/rebase-merge/
+.git/rebase-apply/
+
+# Misc backups
+*.orig
+*.rej
+*.sync-conflict-*
+*.bak-*
+*_backup.*
+
+###############################################################################
+# 9. Tool-specific junk (customize as you notice patterns)
+###############################################################################
+
+# Test artifacts
+test-output/
+test-output-*/
+tests/output/
+tests/tmp/
+
+# Local scripts scratch
+scratch/
+sandbox/
+.local-only/
+local/

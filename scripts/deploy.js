@@ -8,7 +8,7 @@ const firefoxDeployDir = path.join(sourceDir, 'dist-firefox');
 // Get target browser from command line args
 const targetBrowser = process.argv[2] || 'chrome';
 
-// 배포에 필요한 파일 목록
+// 배포에 필요한 파일 목록 - Deployment file list
 const filesToCopy = [
   'background.js',
   'content.js',
@@ -18,7 +18,6 @@ const filesToCopy = [
   'styles.css',
   'pages-list.html',
   'pages-list.js',
-  'constants.js',
   'controls.js'
 ];
 
@@ -33,21 +32,21 @@ const directoriesToCopy = [
 // Select deployment directory based on target browser
 const currentDeployDir = targetBrowser === 'firefox' ? firefoxDeployDir : deployDir;
 
-// 이전 배포 디렉토리 삭제
+// 이전 배포 디렉토리 삭제 - Delete previous deployment directory
 if (fs.existsSync(currentDeployDir)) {
   fs.rmSync(currentDeployDir, { recursive: true, force: true });
 }
 
-// 배포 디렉토리 생성
+// 배포 디렉토리 생성 - Create deployment directory
 fs.mkdirSync(currentDeployDir);
 
-// 파일 복사 함수
+// 파일 복사 함수 - Copy file function
 function copyFile(src, dest) {
   fs.copyFileSync(src, dest);
   console.log(`Copied: ${path.relative(sourceDir, dest)}`);
 }
 
-// 디렉토리 복사 함수
+// 디렉토리 복사 함수 - Copy directory function
 function copyDir(src, dest) {
   fs.mkdirSync(dest, { recursive: true });
   const entries = fs.readdirSync(src, { withFileTypes: true });
@@ -73,7 +72,7 @@ if (fs.existsSync(manifestSrc)) {
   console.warn(`Warning: ${manifestFile} not found`);
 }
 
-// 파일 복사
+// 파일 복사 - Copy files
 for (const file of filesToCopy) {
   const src = path.join(sourceDir, file);
   const dest = path.join(currentDeployDir, file);
@@ -84,7 +83,7 @@ for (const file of filesToCopy) {
   }
 }
 
-// 디렉토리 복사
+// 디렉토리 복사 - Copy directories
 for (const dir of directoriesToCopy) {
   const src = path.join(sourceDir, dir);
   const dest = path.join(currentDeployDir, dir);

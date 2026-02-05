@@ -127,7 +127,7 @@ function removeHighlight(highlightElement = null) {
   }
   if (highlightElement) {
     const groupId = highlightElement.dataset.groupId;
-    // 그룹 내 모든 span 삭제
+    // 그룹 내 모든 span 삭제 - Delete all spans in the group
     const groupSpans = document.querySelectorAll(`.text-highlighter-extension[data-group-id='${groupId}']`);
     groupSpans.forEach(span => {
       const parent = span.parentNode;
@@ -136,7 +136,7 @@ function removeHighlight(highlightElement = null) {
       }
       parent.removeChild(span);
     });
-    // highlights 배열에서 그룹 삭제
+    // highlights 배열에서 그룹 삭제 - Remove group from highlights array
     highlights = highlights.filter(g => g.groupId !== groupId);
     saveHighlights();
     updateMinimapMarkers();
@@ -150,12 +150,12 @@ function removeHighlight(highlightElement = null) {
 function changeHighlightColor(highlightElement, newColor) {
   if (!highlightElement) return;
   const groupId = highlightElement.dataset.groupId;
-  // DOM의 모든 span 색상 변경
+  // DOM의 모든 span 색상 변경 - Change color of all spans in the DOM
   const groupSpans = document.querySelectorAll(`.text-highlighter-extension[data-group-id='${groupId}']`);
   groupSpans.forEach(span => {
     span.style.backgroundColor = newColor;
   });
-  // highlights 배열에서 색상 변경
+  // highlights 배열에서 색상 변경 - Update color in highlights array
   const group = highlights.find(g => g.groupId === groupId);
   if (group) {
     group.color = newColor;
@@ -200,7 +200,7 @@ function applyHighlights() {
 function highlightTextInDocument(element, spanInfos, color, groupId) {
   if (!spanInfos || spanInfos.length === 0) return false;
 
-  // 1. 텍스트 노드 수집
+  // 1. 텍스트 노드 수집 - Collect text nodes
   const walker = document.createTreeWalker(
     element,
     NodeFilter.SHOW_TEXT,
@@ -242,7 +242,7 @@ function highlightTextInDocument(element, spanInfos, color, groupId) {
     return false;
   }
 
-  // 2. 첫 span: position 기준으로 후보 중 가장 가까운 것 선택
+  // 2. 첫 span: position 기준으로 후보 중 가장 가까운 것 선택 - First span: choose closest candidate by position
   const firstSpan = spanInfos[0];
   const firstText = firstSpan.text;
   const firstPosition = firstSpan.position;
@@ -265,7 +265,7 @@ function highlightTextInDocument(element, spanInfos, color, groupId) {
     debugLog('First span text not found:', firstText);
     return false;
   }
-  // position과 가장 가까운 후보 선택
+  // position과 가장 가까운 후보 선택 - Select candidate closest to position
   let bestCandidate = candidates[0];
   if (typeof firstPosition === 'number') {
     let minDiff = Math.abs(candidates[0].top - firstPosition);
@@ -277,7 +277,7 @@ function highlightTextInDocument(element, spanInfos, color, groupId) {
       }
     }
   }
-  // 3. 첫 span 하이라이트 적용
+  // 3. 첫 span 하이라이트 적용 - Apply highlight for first span
   let currentNodeIdx = textNodes.indexOf(bestCandidate.node);
   let currentCharIdx = bestCandidate.idx;
   let highlightSpans = [];
@@ -285,7 +285,7 @@ function highlightTextInDocument(element, spanInfos, color, groupId) {
     const spanInfo = spanInfos[s];
     const spanText = spanInfo.text;
     let found = false;
-    // 이후 span은 순차적으로 텍스트 노드에서만 매칭
+    // 이후 span은 순차적으로 텍스트 노드에서만 매칭 - Subsequent spans match sequentially within text nodes only
     for (; currentNodeIdx < textNodes.length; currentNodeIdx++) {
       const node = textNodes[currentNodeIdx];
       const nodeText = node.textContent;
@@ -295,7 +295,7 @@ function highlightTextInDocument(element, spanInfos, color, groupId) {
         let range = document.createRange();
         range.setStart(node, idx);
         range.setEnd(node, idx + spanText.length);
-        // 하이라이트 적용
+        // 하이라이트 적용 - Apply highlight
         const span = document.createElement('span');
         span.className = 'text-highlighter-extension';
         span.style.backgroundColor = color;
@@ -310,7 +310,7 @@ function highlightTextInDocument(element, spanInfos, color, groupId) {
         } catch (e) {
           debugLog('Error creating highlight (single node):', e, 'Search:', spanText, 'Range text:', range.toString());
         }
-        // 다음 span은 이 노드 이후부터 검색
+        // 다음 span은 이 노드 이후부터 검색 - Next span search starts after this node
         currentCharIdx = idx + spanText.length;
         found = true;
         break;
@@ -343,7 +343,7 @@ function addHighlightEventListeners(highlightElement) {
     }
   });
 
-  // 그룹 전체에 hover 효과
+  // 그룹 전체에 hover 효과 - Apply hover effect to entire group
   highlightElement.addEventListener('mouseenter', function () {
     const groupId = highlightElement.dataset.groupId;
     if (!groupId) return;
@@ -500,7 +500,7 @@ function highlightSelectedText(color) {
     const groupId = Date.now().toString();
     const highlightSpans = processSelectionRange(convertedRange, color, groupId);
     if (highlightSpans.length > 0) {
-      // 그룹 정보 생성
+      // 그룹 정보 생성 - Create group info
       const group = {
         groupId,
         color,

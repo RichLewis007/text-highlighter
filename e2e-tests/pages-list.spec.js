@@ -51,8 +51,8 @@ test.describe('Pages List UI and Delete All Pages', () => {
     await listPage.close();
   });
 
-  test('test-page.html의 h1, test-page3.html의 h2 하이라이트 후 export highlights 동작 검증', async ({ context, background, extensionId }) => {
-    // 1. test-page.html: h1 하이라이트(노란색)
+  test('test-page.html의 h1, test-page3.html의 h2 하이라이트 후 export highlights 동작 검증 - Verify export highlights after highlighting h1 in test-page.html and h2 in test-page3.html', async ({ context, background, extensionId }) => {
+    // 1. test-page.html: h1 하이라이트(노란색) - test-page.html: highlight h1 (yellow)
     const page1 = await context.newPage();
     await page1.goto(`file:///${path.join(__dirname, 'test-page.html')}`);
     const h1 = page1.locator('h1');
@@ -62,7 +62,7 @@ test.describe('Pages List UI and Delete All Pages', () => {
     const h1Span = h1.locator('span.text-highlighter-extension');
     await expectHighlightSpan(h1Span, { color: 'rgb(255, 255, 0)', text: h1Text });
 
-    // 2. test-page3.html: h2 하이라이트(초록색)
+    // 2. test-page3.html: h2 하이라이트(초록색) - test-page3.html: highlight h2 (green)
     const page3 = await context.newPage();
     await page3.goto(`file:///${path.join(__dirname, 'test-page3.html')}`);
     const h2 = page3.locator('h2').first();
@@ -72,7 +72,7 @@ test.describe('Pages List UI and Delete All Pages', () => {
     const h2Span = h2.locator('span.text-highlighter-extension');
     await expectHighlightSpan(h2Span, { color: 'rgb(0, 128, 0)', text: h2Text });
 
-    // 3. pages-list.html에서 export 버튼 클릭
+    // 3. pages-list.html에서 export 버튼 클릭 - Click export button in pages-list.html
     const listPage = await context.newPage();
     await openPagesList(listPage, extensionId);
     const [download] = await Promise.all([
@@ -83,7 +83,7 @@ test.describe('Pages List UI and Delete All Pages', () => {
     const downloadPath = await download.path();
     const exported = JSON.parse(fs.readFileSync(downloadPath, 'utf-8'));
 
-    // 4. export된 데이터에 두 페이지의 하이라이트가 모두 포함되어 있는지 검증
+    // 4. export된 데이터에 두 페이지의 하이라이트가 모두 포함되어 있는지 검증 - Verify exported data includes highlights from both pages
     const exportedPages = exported.pages;
     expect(exportedPages.length).toBeGreaterThanOrEqual(2);
     const pageHtmlNames = exportedPages.map(p => p.url || p.title || '');
@@ -100,8 +100,8 @@ test.describe('Pages List UI and Delete All Pages', () => {
     expect(colors).toContain('green');
   });
 
-  test('test-page.html와 test-page3.html에서 각각 하이라이트 후 export에 모두 포함되는지 검증', async ({ context, background, extensionId }) => {
-    // 1. test-page.html: h1 하이라이트(노란색)
+  test('test-page.html와 test-page3.html에서 각각 하이라이트 후 export에 모두 포함되는지 검증 - Verify both highlights are included in export from test-page.html and test-page3.html', async ({ context, background, extensionId }) => {
+    // 1. test-page.html: h1 하이라이트(노란색) - test-page.html: highlight h1 (yellow)
     const page1 = await context.newPage();
     await page1.goto(`file:///${path.join(__dirname, 'test-page.html')}`);
     const h1 = page1.locator('h1');
@@ -111,7 +111,7 @@ test.describe('Pages List UI and Delete All Pages', () => {
     const h1Span = h1.locator('span.text-highlighter-extension');
     await expectHighlightSpan(h1Span, { color: 'rgb(255, 255, 0)', text: h1Text });
 
-    // 2. test-page3.html: h2 하이라이트(초록색)
+    // 2. test-page3.html: h2 하이라이트(초록색) - test-page3.html: highlight h2 (green)
     const page3 = await context.newPage();
     await page3.goto(`file:///${path.join(__dirname, 'test-page3.html')}`);
     const h2 = page3.locator('h2').first();
@@ -121,7 +121,7 @@ test.describe('Pages List UI and Delete All Pages', () => {
     const h2Span = h2.locator('span.text-highlighter-extension');
     await expectHighlightSpan(h2Span, { color: 'rgb(0, 128, 0)', text: h2Text });
 
-    // 3. pages-list.html에서 export 버튼 클릭
+    // 3. pages-list.html에서 export 버튼 클릭 - Click export button in pages-list.html
     const listPage = await context.newPage();
     await openPagesList(listPage, extensionId);
     const [download] = await Promise.all([
@@ -132,7 +132,7 @@ test.describe('Pages List UI and Delete All Pages', () => {
     const downloadPath = await download.path();
     const exported = JSON.parse(fs.readFileSync(downloadPath, 'utf-8'));
 
-    // 4. export된 데이터에 두 페이지의 하이라이트가 모두 포함되어 있는지 검증
+    // 4. export된 데이터에 두 페이지의 하이라이트가 모두 포함되어 있는지 검증 - Verify exported data includes highlights from both pages
     const exportedPages = exported.pages;
     expect(exportedPages.length).toBeGreaterThanOrEqual(2);
     const pageHtmlNames = exportedPages.map(p => p.url || p.title || '');
@@ -149,31 +149,31 @@ test.describe('Pages List UI and Delete All Pages', () => {
     expect(colors).toContain('green');
   });
 
-  test('all-highlights-test.json 파일을 import 하여 페이지가 목록에 표시되는지 검증', async ({ context, extensionId }) => {
-    // 1. pages-list.html 열기 (저장소는 새 context로 초기화 상태)
+  test('all-highlights-test.json 파일을 import 하여 페이지가 목록에 표시되는지 검증 - Verify pages appear in the list after importing all-highlights-test.json', async ({ context, extensionId }) => {
+    // 1. pages-list.html 열기 (저장소는 새 context로 초기화 상태) - Open pages-list.html (storage is reset in a new context)
     const listPage = await context.newPage();
     await openPagesList(listPage, extensionId);
 
-    // 2. import 버튼 클릭 후 파일 선택
+    // 2. import 버튼 클릭 후 파일 선택 - Click import button and choose file
     const importBtn = listPage.locator('#import-btn');
     await expect(importBtn).toBeVisible();
 
-    // 대화상자(Import 성공 alert) 자동 수락
+    // 대화상자(Import 성공 alert) 자동 수락 - Auto-accept dialog (Import success alert)
     listPage.on('dialog', async (dialog) => {
       await dialog.accept();
     });
 
     const jsonPath = path.join(__dirname, 'all-highlights-test.json');
 
-    // importBtn 클릭으로 파일 input 열기 후 파일 설정
+    // importBtn 클릭으로 파일 input 열기 후 파일 설정 - Click importBtn to open file input and set file
     await importBtn.click();
     await listPage.setInputFiles('#import-file', jsonPath);
 
-    // 3. import 완료 후 페이지 아이템이 2개 이상인지 확인
+    // 3. import 완료 후 페이지 아이템이 2개 이상인지 확인 - After import, verify at least two page items
     const pageItems = listPage.locator('.page-item');
     await expect(pageItems).toHaveCount(2);
 
-    // 4. 각 페이지 URL 텍스트 포함 여부 확인
+    // 4. 각 페이지 URL 텍스트 포함 여부 확인 - Verify each page URL text is included
     const urls = await pageItems.locator('.page-url').allTextContents();
     expect(urls.some(u => u.includes('test-page.html'))).toBeTruthy();
     expect(urls.some(u => u.includes('test-page2.html'))).toBeTruthy();

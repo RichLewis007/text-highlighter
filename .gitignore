@@ -1,7 +1,30 @@
+# Local files
+local/
+
+# Node modules
 node_modules/
+
+# Distribution files
 dist/
 dist-firefox/
+
+# Outputs
 outputs/
+
+# Jest cache
 .jest_cache/
-/test-results/
+
+# Test results
+test-results/
+
+# Claude
 .claude/
+
+# VSCode
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db

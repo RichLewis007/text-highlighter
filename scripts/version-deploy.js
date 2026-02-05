@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-// 버전 및 브라우저 인수 확인
+// 버전 및 브라우저 인수 확인 - Check version and browser arguments
 const version = process.argv[2];
 const browser = process.argv[3] || 'chrome';
 
@@ -29,7 +29,7 @@ const zipFileName = `text-highlighter-${version}-${browser}.zip`;
 
 console.log(`Starting version deploy for version: ${version} (${browser})`);
 
-// 1. manifest 파일 버전 업데이트
+// 1. manifest 파일 버전 업데이트 - Update manifest file version
 console.log(`\n1. Updating ${manifestFile} version...`);
 try {
   const manifestContent = fs.readFileSync(manifestPath, 'utf8');
@@ -42,7 +42,7 @@ try {
   process.exit(1);
 }
 
-// 2. DEBUG_MODE를 false로 변경
+// 2. DEBUG_MODE를 false로 변경 - Set DEBUG_MODE to false
 console.log('\n2. Setting DEBUG_MODE to false in JS files...');
 const jsFiles = [
   'background.js',
@@ -58,7 +58,7 @@ for (const file of jsFiles) {
       let content = fs.readFileSync(filePath, 'utf8');
       const originalContent = content;
       
-      // DEBUG_MODE = true를 DEBUG_MODE = false로 변경
+      // DEBUG_MODE = true를 DEBUG_MODE = false로 변경 - Replace DEBUG_MODE = true with DEBUG_MODE = false
       content = content.replace(/const DEBUG_MODE = true/g, 'const DEBUG_MODE = false');
       
       if (content !== originalContent) {
@@ -74,7 +74,7 @@ for (const file of jsFiles) {
   }
 }
 
-// 3. deploy.js 실행
+// 3. deploy.js 실행 - Run deploy.js
 console.log('\n3. Running deploy script...');
 try {
   execSync(`node scripts/deploy.js ${browser}`, { 
@@ -87,7 +87,7 @@ try {
   process.exit(1);
 }
 
-// 4. outputs 디렉토리 생성 및 zip 파일 생성
+// 4. outputs 디렉토리 생성 및 zip 파일 생성 - Create outputs directory and zip file
 console.log('\n4. Creating outputs directory and zip file...');
 const distDir = browser === 'firefox' ? path.join(sourceDir, 'dist-firefox') : path.join(sourceDir, 'dist');
 const zipPath = path.join(outputsDir, zipFileName);
@@ -98,18 +98,18 @@ if (!fs.existsSync(distDir)) {
 }
 
 try {
-  // outputs 디렉토리 생성
+  // outputs 디렉토리 생성 - Create outputs directory
   if (!fs.existsSync(outputsDir)) {
     fs.mkdirSync(outputsDir);
     console.log('✓ Created outputs directory');
   }
   
-  // 기존 zip 파일이 있으면 삭제
+  // 기존 zip 파일이 있으면 삭제 - Delete existing zip file if present
   if (fs.existsSync(zipPath)) {
     fs.unlinkSync(zipPath);
   }
   
-  // zip 명령어 실행
+  // zip 명령어 실행 - Run zip command
   execSync(`cd "${distDir}" && zip -r "../outputs/${zipFileName}" .`, { 
     stdio: 'inherit' 
   });

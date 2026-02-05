@@ -27,7 +27,7 @@ const DEBUG_MODE = false;
 // Debug log function
 const debugLog = DEBUG_MODE ? console.log.bind(console) : () => {};
 
-// 저장된 단축키 정보
+// 저장된 단축키 정보 - Stored shortcut info
 let storedShortcuts = {};
 
 // Get current shortcuts from browserAPI.commands API
@@ -79,11 +79,11 @@ async function loadCustomColors() {
   }
 }
 
-// 컨텍스트 메뉴 생성/업데이트 함수
+// 컨텍스트 메뉴 생성/업데이트 함수 - Create/update context menu function
 async function createOrUpdateContextMenus() {
   debugLog('Creating/updating context menus...');
 
-  // 기존 메뉴 모두 제거
+  // 기존 메뉴 모두 제거 - Remove all existing menus
   try {
     await browserAPI.contextMenus.removeAll();
   } catch (error) {
@@ -107,7 +107,7 @@ async function createOrUpdateContextMenus() {
   // Get shortcut information and display in context menu
   const commandShortcuts = await getCurrentShortcuts();
 
-  // 단축키 정보 저장
+  // 단축키 정보 저장 - Store shortcut info
   storedShortcuts = { ...commandShortcuts };
 
   for (const color of currentColors) {
@@ -144,12 +144,12 @@ browserAPI.runtime.onInstalled.addListener(async () => {
   if (DEBUG_MODE) console.log('Extension installed/updated. Debug mode:', DEBUG_MODE);
 });
 
-// 탭 활성화 시 단축키 변경사항 확인 후 필요시 컨텍스트 메뉴 업데이트
+// 탭 활성화 시 단축키 변경사항 확인 후 필요시 컨텍스트 메뉴 업데이트 - On tab activation, check shortcut changes and update context menu if needed
 browserAPI.tabs.onActivated.addListener(async () => {
   const currentShortcuts = await getCurrentShortcuts();
   let hasChanged = false;
 
-  // 저장된 단축키와 현재 단축키 비교
+  // 저장된 단축키와 현재 단축키 비교 - Compare stored shortcuts with current shortcuts
   for (const commandName in currentShortcuts) {
     if (storedShortcuts[commandName] !== currentShortcuts[commandName]) {
       hasChanged = true;
@@ -157,7 +157,7 @@ browserAPI.tabs.onActivated.addListener(async () => {
     }
   }
 
-  // 단축키가 제거된 경우도 체크
+  // 단축키가 제거된 경우도 체크 - Also check if shortcuts were removed
   for (const commandName in storedShortcuts) {
     if (!currentShortcuts[commandName]) {
       hasChanged = true;
@@ -414,7 +414,7 @@ browserAPI.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         const { url, groupId } = message;
         const result = await browserAPI.storage.local.get([url]);
         const highlights = result[url] || [];
-        // groupId로 그룹 삭제
+        // groupId로 그룹 삭제 - Delete group by groupId
         const updatedHighlights = highlights.filter(g => g.groupId !== groupId);
         if (updatedHighlights.length > 0) {
           const saveData = {};

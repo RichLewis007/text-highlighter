@@ -13,7 +13,7 @@ async function getCurrentTabId(background) {
 }
 
 test.describe('Popup Tests', () => {
-  test('팝업 테스트', async ({extensionId, context, page}) => {
+  test('팝업 테스트 - Popup test', async ({extensionId, context, page}) => {
     await page.goto(`file:///${path.join(__dirname, 'test-page.html')}`);
 
     if (!extensionId) {
@@ -33,7 +33,7 @@ test.describe('Popup Tests', () => {
     await popupPage.close();
   });
 
-  test('h1 + p 선택, 노란색 하이라이트, clearAllHighlights로 모두 삭제', async ({ page, context, background, extensionId }) => {
+  test('h1 + p 선택, 노란색 하이라이트, clearAllHighlights로 모두 삭제 - Select h1 + p, highlight yellow, delete all via clearAllHighlights', async ({ page, context, background, extensionId }) => {
     await page.goto(`file:///${path.join(__dirname, 'test-page.html')}`);
 
     const h1 = page.locator('h1');
@@ -78,7 +78,7 @@ test.describe('Popup Tests', () => {
     await expect(pSpan).toHaveCount(0);
   });
 
-  test('h1 선택, 노란색 하이라이트 후 팝업에서 삭제', async ({ page, context, background, extensionId }) => {
+  test('h1 선택, 노란색 하이라이트 후 팝업에서 삭제 - Select h1, highlight yellow, then delete in popup', async ({ page, context, background, extensionId }) => {
     await page.goto(`file:///${path.join(__dirname, 'test-page.html')}`);
 
     const h1 = page.locator('h1');
@@ -106,7 +106,7 @@ test.describe('Popup Tests', () => {
     await expect(h1Span).toHaveCount(0);
   });
 
-  test('텍스트 선택 후 하이라이트, popup에 해당 하이라이트가 표시되는지 검증', async ({ page, context, background, extensionId }) => {
+  test('텍스트 선택 후 하이라이트, popup에 해당 하이라이트가 표시되는지 검증 - After selecting text and highlighting, verify it appears in the popup', async ({ page, context, background, extensionId }) => {
     await page.goto(`file:///${path.join(__dirname, 'test-page.html')}`);
 
     const firstParagraph = page.locator('p').first();
@@ -133,7 +133,7 @@ test.describe('Popup Tests', () => {
   });
 
 
-  test('selection icon 표시 테스트: 기본 비활성화 상태에서 선택 후 아이콘 없음 검증', async ({ page, context, background, extensionId }) => {
+  test('selection icon 표시 테스트: 기본 비활성화 상태에서 선택 후 아이콘 없음 검증 - Selection icon display test: verify no icon when disabled by default', async ({ page, context, background, extensionId }) => {
     await page.goto(`file:///${path.join(__dirname, 'test-page.html')}`);
 
     const firstParagraph = page.locator('p').first();
@@ -146,7 +146,7 @@ test.describe('Popup Tests', () => {
     await expect(selectionIcon).toHaveCount(0);
   });
 
-  test('selection icon 표시 테스트: popup에서 활성화 후 선택 시 아이콘 표시 검증', async ({ page, context, background, extensionId }) => {
+  test('selection icon 표시 테스트: popup에서 활성화 후 선택 시 아이콘 표시 검증 - Selection icon display test: verify icon appears after enabling in popup', async ({ page, context, background, extensionId }) => {
     const popupPage = await context.newPage();
     await popupPage.goto(`chrome-extension://${extensionId}/popup.html`);
 
@@ -171,7 +171,7 @@ test.describe('Popup Tests', () => {
     await expect(selectionIcon).toBeVisible();
   });
 
-  test('control UI에서 커스텀 색상 추가 후 popup에서 Delete Custom Colors 로 제거', async ({ page, context, background, extensionId }) => {
+  test('control UI에서 커스텀 색상 추가 후 popup에서 Delete Custom Colors 로 제거 - Add custom color in control UI, then remove via Delete Custom Colors in popup', async ({ page, context, background, extensionId }) => {
     await page.goto(`file:///${path.join(__dirname, 'test-page.html')}`);
 
     const h1 = page.locator('h1');
@@ -227,8 +227,8 @@ test.describe('Popup Tests', () => {
     await popupPage.close();
   });
 
-  test('selection icon을 이용한 highlight 동작 검증', async ({ page, context, background, extensionId }) => {
-    // popup.html 로딩 후 selection-controls-toggle 체크
+  test('selection icon을 이용한 highlight 동작 검증 - Verify highlight flow using selection icon', async ({ page, context, background, extensionId }) => {
+    // popup.html 로딩 후 selection-controls-toggle 체크 - After loading popup.html, check selection-controls-toggle
     const popupPage = await context.newPage();
     await popupPage.goto(`chrome-extension://${extensionId}/popup.html`);
 
@@ -239,7 +239,7 @@ test.describe('Popup Tests', () => {
 
     await popupPage.close();
 
-    // test-page.html 로딩 후 h1 태그 선택
+    // test-page.html 로딩 후 h1 태그 선택 - After loading test-page.html, select the h1 tag
     await page.goto(`file:///${path.join(__dirname, 'test-page.html')}`);
     
     const h1 = page.locator('h1');
@@ -250,22 +250,22 @@ test.describe('Popup Tests', () => {
     const selected = await page.evaluate(() => window.getSelection().toString());
     expect(selected.trim()).toBe(h1Text.trim());
 
-    // selection icon 표시 확인
+    // selection icon 표시 확인 - Verify selection icon is shown
     const selectionIcon = page.locator('.text-highlighter-selection-icon');
     await expect(selectionIcon).toBeVisible();
 
-    // selection icon 클릭 (div 안의 img 태그 클릭)
+    // selection icon 클릭 (div 안의 img 태그 클릭) - Click selection icon (img tag inside div)
     await selectionIcon.locator('img').click();
 
-    // control UI 표시 확인 (selection-controls 클래스가 있는 것 선택)
+    // control UI 표시 확인 (selection-controls 클래스가 있는 것 선택) - Verify control UI is shown (select element with selection-controls class)
     const controls = page.locator('.text-highlighter-controls.text-highlighter-selection-controls');
     await expect(controls).toBeVisible();
 
-    // 첫번째 yellow 색상 아이콘 클릭
+    // 첫번째 yellow 색상 아이콘 클릭 - Click the first yellow color icon
     const yellowColorButton = controls.locator('.color-button').first();
     await yellowColorButton.click();
 
-    // 선택된 영역이 highlight 되었는지 검증
+    // 선택된 영역이 highlight 되었는지 검증 - Verify selected area is highlighted
     const highlightedSpan = h1.locator('span.text-highlighter-extension');
     await expectHighlightSpan(highlightedSpan, { color: 'rgb(255, 255, 0)', text: h1Text });
   });
