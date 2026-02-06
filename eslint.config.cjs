@@ -51,6 +51,7 @@ module.exports = [
     languageOptions: {
       globals: {
         debugLog: "readonly",
+        getMessage: "readonly",
         createHighlightControls: "readonly",
         refreshHighlightControlsColors: "readonly",
         setSelectionControlsVisibility: "readonly",
