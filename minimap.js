@@ -1,5 +1,5 @@
-const DEBUG_MODE = false;
-const _debugLog = DEBUG_MODE ? console.log.bind(console) : () => {};
+const MINIMAP_DEBUG_MODE = false;
+const _debugLog = MINIMAP_DEBUG_MODE ? console.log.bind(console) : () => {};
 
 /* exported MinimapManager */
 class MinimapManager {

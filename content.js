@@ -4,6 +4,10 @@ const currentUrlKey = normalizeUrlKey(currentPageUrl);
 
 let currentColors = [];
 
+// Debug mode setting - change to true during development
+const CONTENT_DEBUG_MODE = false;
+const debugLog = CONTENT_DEBUG_MODE ? console.log.bind(console) : () => {};
+
 // Minimap manager instance
 let minimapManager = null;
 

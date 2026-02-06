@@ -14,6 +14,26 @@ function getMessage(key, substitutions = null) {
   return browserAPI.i18n.getMessage(key, substitutions);
 }
 
+function getStorageLocal(keys, cb) {
+  try {
+    const result = browserAPI.storage.local.get(keys);
+    if (result && typeof result.then === 'function') {
+      result.then(cb).catch((err) => {
+        controlsDebugLog('storage.local.get failed:', err);
+        cb({});
+      });
+      return;
+    }
+  } catch (err) {
+    controlsDebugLog('storage.local.get threw:', err);
+  }
+  browserAPI.storage.local.get(keys, cb);
+}
+
+// Debug mode setting - change to true during development
+const CONTROLS_DEBUG_MODE = false;
+const controlsDebugLog = CONTROLS_DEBUG_MODE ? console.log.bind(console) : () => {};
+
 // Highlight controller UI container
 let highlightControlsContainer = null;
 let activeHighlightElement = null;
@@ -27,6 +47,23 @@ let selectionControlsEnabled = false;
 let selectionIcon = null;
 let selectionControlsContainer = null;
 let currentSelection = null;
+
+function ensureColorsLoaded() {
+  if (Array.isArray(currentColors) && currentColors.length > 0) {
+    return Promise.resolve(currentColors);
+  }
+  return new Promise((resolve) => {
+    browserAPI.runtime.sendMessage({ action: 'getColors' }, (response) => {
+      if (response && response.colors) {
+        currentColors = response.colors;
+        refreshHighlightControlsColors();
+        resolve(currentColors);
+      } else {
+        resolve(currentColors);
+      }
+    });
+  });
+}
 
 // Helper function for jelly animation
 function addJellyAnimation(btn) {
@@ -594,9 +631,10 @@ function hideHighlightControls() {
 // Initialize selection controls feature
 function initializeSelectionControls() {
   // Load selection controls setting from storage
-  browserAPI.storage.local.get(['selectionControlsVisible'], (result) => {
-    selectionControlsEnabled = result.selectionControlsVisible || false;
-    debugLog('Selection controls enabled:', selectionControlsEnabled);
+  getStorageLocal(['selectionControlsVisible'], (result) => {
+    const hasValue = result && Object.prototype.hasOwnProperty.call(result, 'selectionControlsVisible');
+    selectionControlsEnabled = hasValue ? Boolean(result.selectionControlsVisible) : false;
+    controlsDebugLog('Selection controls enabled:', selectionControlsEnabled);
   });
 
   // Add mouseup event listener to detect text selection
@@ -716,13 +754,18 @@ function hideSelectionIcon() {
 }
 
 // Show selection controls (reusing existing controls.js UI without delete button)
-function showSelectionControls(mouseX, mouseY) {
+async function showSelectionControls(mouseX, mouseY) {
   if (!currentSelection) {return;}
   
   hideSelectionControls(); // Remove any existing controls
   
+  // Ensure colors are loaded before showing controls
+  await ensureColorsLoaded();
+
   // Create a modified version of the existing highlight controls
-  if (!highlightControlsContainer) {createHighlightControls();}
+  if (!highlightControlsContainer) {
+    createHighlightControls();
+  }
   
   // Clone the existing controls container but modify it for selection mode
   selectionControlsContainer = highlightControlsContainer.cloneNode(true);
@@ -811,7 +854,7 @@ function showSelectionControls(mouseX, mouseY) {
           hideSelectionIcon();
           currentSelection = null;
         } catch (error) {
-          debugLog('Could not restore selection:', error);
+          controlsDebugLog('Could not restore selection:', error);
           hideSelectionControls();
           hideSelectionIcon();
           currentSelection = null;
