@@ -489,10 +489,6 @@ browserAPI.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
       // Handler for single highlight deletion
       if (message.action === 'deleteHighlight') {
-        const { url, groupId } = message;
-        const result = await browserAPI.storage.local.get([url]);
-        const highlights = result[url] || [];
-        // groupId로 그룹 삭제 - Delete group by groupId
         const { urlKey, pageUrl, groupId } = message;
         const normalizedKey = normalizeUrlKey(urlKey || pageUrl);
         const result = await browserAPI.storage.local.get([normalizedKey, pageUrl]);
