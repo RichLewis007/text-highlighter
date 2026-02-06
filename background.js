@@ -22,7 +22,7 @@ function getMessage(key, substitutions = null) {
 }
 
 function normalizeUrlKey(urlString) {
-  if (!urlString) return '';
+  if (!urlString) {return '';}
   try {
     const url = new URL(urlString);
     if (url.protocol === 'file:') {
@@ -32,7 +32,7 @@ function normalizeUrlKey(urlString) {
       return `${url.protocol}//${url.pathname}`;
     }
     return `${url.origin}${url.pathname}`;
-  } catch (e) {
+  } catch (_e) {
     const noHash = urlString.split('#')[0];
     return noHash.split('?')[0];
   }
@@ -99,7 +99,7 @@ let currentColors = [...COLORS];
 async function loadCustomColors() {
   try {
     const result = await browserAPI.storage.local.get(['customColors']);
-    let customColors = result.customColors || [];
+    const customColors = result.customColors || [];
     let needsUpdate = false;
     
     // Assign numbers to existing custom colors if they don't have them
@@ -189,7 +189,7 @@ async function createOrUpdateContextMenus() {
 
 // Initial setup when extension is installed or updated
 browserAPI.runtime.onInstalled.addListener(async () => {
-  if (DEBUG_MODE) console.log('Extension installed/updated. Debug mode:', DEBUG_MODE);
+  if (DEBUG_MODE) {console.log('Extension installed/updated. Debug mode:', DEBUG_MODE);}
 });
 
 // 탭 활성화 시 단축키 변경사항 확인 후 필요시 컨텍스트 메뉴 업데이트 - On tab activation, check shortcut changes and update context menu if needed
@@ -235,7 +235,7 @@ async function notifyTabHighlightsRefresh(highlights, urlKey, pageUrl = '') {
 
 // Helper function to remove storage keys when no highlights remain
 async function cleanupEmptyHighlightData(urlKey, pageUrl = '') {
-  if (!urlKey && !pageUrl) return;
+  if (!urlKey && !pageUrl) {return;}
 
   debugLog('Cleaning up empty highlight data for URL:', urlKey || pageUrl);
   try {
@@ -410,7 +410,7 @@ browserAPI.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
         // Load existing custom colors from storage.sync
         const stored = await browserAPI.storage.local.get(['customColors']);
-        let customColors = stored.customColors || [];
+        const customColors = stored.customColors || [];
 
         // Check duplication by value
         const exists = [...currentColors, ...customColors].some(c => c.color.toLowerCase() === newColorValue.toLowerCase());
@@ -587,8 +587,8 @@ browserAPI.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         // Sort pages by most recent update
         pages.sort((a, b) => {
           // Treat pages without lastUpdated as oldest
-          if (!a.lastUpdated) return 1;
-          if (!b.lastUpdated) return -1;
+          if (!a.lastUpdated) {return 1;}
+          if (!b.lastUpdated) {return -1;}
 
           // Sort in descending order (newest date first)
           return new Date(b.lastUpdated) - new Date(a.lastUpdated);
@@ -637,7 +637,7 @@ browserAPI.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   try {
     await loadCustomColors();
     await createOrUpdateContextMenus();
-  } catch (e) {
-    console.error('Initialization error in background script', e);
+  } catch (_e) {
+    console.error('Initialization error in background script', _e);
   }
 })();

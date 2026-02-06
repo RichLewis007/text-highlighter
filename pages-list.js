@@ -10,7 +10,7 @@ const browserAPI = (() => {
 })();
 
 function normalizeUrlKey(urlString) {
-  if (!urlString) return '';
+  if (!urlString) {return '';}
   try {
     const url = new URL(urlString);
     if (url.protocol === 'file:') {
@@ -20,24 +20,7 @@ function normalizeUrlKey(urlString) {
       return `${url.protocol}//${url.pathname}`;
     }
     return `${url.origin}${url.pathname}`;
-  } catch (e) {
-    const noHash = urlString.split('#')[0];
-    return noHash.split('?')[0];
-  }
-}
-
-function normalizeUrlKey(urlString) {
-  if (!urlString) return '';
-  try {
-    const url = new URL(urlString);
-    if (url.protocol === 'file:') {
-      return `file://${url.pathname}`;
-    }
-    if (url.origin === 'null') {
-      return `${url.protocol}//${url.pathname}`;
-    }
-    return `${url.origin}${url.pathname}`;
-  } catch (e) {
+  } catch (_e) {
     const noHash = urlString.split('#')[0];
     return noHash.split('?')[0];
   }
@@ -51,8 +34,8 @@ function initializeThemeWatcher() {
   updateTheme(darkModeQuery.matches);
   
   // 테마 변경 감지 - Detect theme changes
-  darkModeQuery.addEventListener('change', (e) => {
-    updateTheme(e.matches);
+  darkModeQuery.addEventListener('change', (_e) => {
+    updateTheme(_e.matches);
   });
 }
 
@@ -183,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function () {
           try {
             const urlObj = new URL(page.url);
             pageTitle = urlObj.hostname + urlObj.pathname;
-          } catch (e) {
+          } catch (_e) {
             pageTitle = page.url;
           }
         }
@@ -196,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Determine date format based on current language
             const locale = browserAPI.i18n.getUILanguage ? browserAPI.i18n.getUILanguage() : 'en';
             lastUpdated = date.toLocaleString(locale);
-          } catch (e) {
+          } catch (_e) {
             lastUpdated = page.lastUpdated;
           }
         }
@@ -360,7 +343,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     importFileInput.addEventListener('change', function (event) {
       const file = event.target.files[0];
-      if (!file) return;
+      if (!file) {return;}
       const reader = new FileReader();
       reader.onload = function (e) {
         try {
@@ -380,7 +363,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const confirmMsg = getMessage('importOverwriteConfirm', 'Some pages already have highlights. Existing highlights for those pages will be deleted and replaced with imported data. Proceed?');
                 proceed = confirm(confirmMsg);
               }
-              if (!proceed) return;
+              if (!proceed) {return;}
               // Prepare operations: delete old, add new
               const ops = {};
               overlap.forEach(url => {
@@ -404,7 +387,7 @@ document.addEventListener('DOMContentLoaded', function () {
               alert(getMessage('importError', 'Error checking existing highlights.'));
             }
           });
-        } catch (err) {
+        } catch (_err) {
           alert(getMessage('importInvalidFormat', 'Invalid import file format.'));
         }
       };

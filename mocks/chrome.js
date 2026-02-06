@@ -2,7 +2,7 @@ module.exports = {
   runtime: {
     sendMessage: jest.fn((message, callback) => {
       if (message.action === 'saveHighlights') {
-        if (callback) callback({ success: true });
+        if (callback) {callback({ success: true });}
       }
     }),
     onMessage: {

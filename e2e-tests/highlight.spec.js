@@ -102,10 +102,10 @@ test.describe('Chrome Extension Tests', () => {
     await page.evaluate(() => {
       const h1 = document.querySelector('h1');
       const p = document.querySelector('p');
-      if (!h1 || !p) throw new Error('h1 또는 p 태그를 찾을 수 없습니다. - Could not find h1 or p tag.');
+      if (!h1 || !p) {throw new Error('h1 또는 p 태그를 찾을 수 없습니다. - Could not find h1 or p tag.');}
       const h1TextNode = Array.from(h1.childNodes).find(n => n.nodeType === Node.TEXT_NODE);
       const pTextNode = Array.from(p.childNodes).find(n => n.nodeType === Node.TEXT_NODE);
-      if (!h1TextNode || !pTextNode) throw new Error('텍스트 노드를 찾을 수 없습니다. - Could not find text nodes.');
+      if (!h1TextNode || !pTextNode) {throw new Error('텍스트 노드를 찾을 수 없습니다. - Could not find text nodes.');}
       const range = document.createRange();
       range.setStart(h1TextNode, 0);
       range.setEnd(pTextNode, pTextNode.textContent.length);
@@ -139,10 +139,10 @@ test.describe('Chrome Extension Tests', () => {
     // strong 태그의 첫 번째 자식 노드가 "inline element" 텍스트임 - The first child node of strong contains the "inline element" text
     await page.evaluate(() => {
       const p = document.getElementById('inline-element');
-      if (!p) throw new Error('Could not find the paragraph with id "inline-element".');
+      if (!p) {throw new Error('Could not find the paragraph with id "inline-element".');}
       const textNode = Array.from(p.childNodes).find(n => n.nodeType === Node.TEXT_NODE && n.textContent.includes('This has'));
       const strong = p.querySelector('strong');
-      if (!textNode || !strong) throw new Error('Could not find the text node or <strong> element.');
+      if (!textNode || !strong) {throw new Error('Could not find the text node or <strong> element.');}
       const strongTextNode = strong.firstChild;
       // "This has " 길이: 9, strong 내부 "inline" 길이: 6 - "This has " length: 9, "inline" length inside strong: 6
       const range = document.createRange();
@@ -183,7 +183,7 @@ test.describe('Chrome Extension Tests', () => {
       const afterStrongNode = strong.nextSibling;
       const text = strongTextNode.textContent;
       const startIdx = text.indexOf('element');
-      if (startIdx === -1) throw new Error('"element" not found in strongTextNode.');
+      if (startIdx === -1) {throw new Error('"element" not found in strongTextNode.');}
       const range = document.createRange();
       range.setStart(strongTextNode, startIdx); // strong 내부 "element"의 시작 - start of "element" inside strong
       range.setEnd(afterStrongNode, afterStrongNode.textContent.length); // " in text."의 끝 - end of " in text."
@@ -284,7 +284,7 @@ test.describe('Chrome Extension Tests', () => {
     await paragraph.evaluate((p) => {
       // 첫 번째 텍스트 노드 찾기 - Find the first text node
       const firstTextNode = Array.from(p.childNodes).find(n => n.nodeType === Node.TEXT_NODE);
-      if (!firstTextNode) throw new Error('첫 번째 텍스트 노드를 찾을 수 없습니다. - Could not find the first text node.');
+      if (!firstTextNode) {throw new Error('첫 번째 텍스트 노드를 찾을 수 없습니다. - Could not find the first text node.');}
       const range = document.createRange();
       range.setStart(firstTextNode, 0);
       range.setEnd(p, 2); // <br> 태그 2개 전까지 - Up to two <br> tags before the end
@@ -311,7 +311,7 @@ test.describe('Chrome Extension Tests', () => {
 
     // 페이지 리프레시 후 하이라이트 유지 검증 - Verify highlight persists after page refresh
     await page.reload();
-    const highlightedSpansAfterReload = paragraph.locator('span.text-highlighter-extension');
+    const _highlightedSpansAfterReload = paragraph.locator('span.text-highlighter-extension');
     await verifyHighlight();
   });
 
@@ -323,7 +323,7 @@ test.describe('Chrome Extension Tests', () => {
       const container = document.querySelector('div.section-content.blog-article.card');
       const p = container.querySelector('p');
       const textNode = Array.from(p.childNodes).find(n => n.nodeType === Node.TEXT_NODE);
-      if (!textNode) throw new Error('텍스트 노드를 찾을 수 없습니다. - Could not find text node.');
+      if (!textNode) {throw new Error('텍스트 노드를 찾을 수 없습니다. - Could not find text node.');}
       const range = document.createRange();
       range.setStart(textNode, 0);
       range.setEnd(container, 13); // endOffset: 13
@@ -350,7 +350,7 @@ test.describe('Chrome Extension Tests', () => {
 
     // 페이지 리프레시 후 하이라이트 유지 검증 - Verify highlight persists after page refresh
     await page.reload();
-    const highlightedSpansAfterReload = page.locator('p span.text-highlighter-extension');
+    const _highlightedSpansAfterReload = page.locator('p span.text-highlighter-extension');
     await verifyHighlight();
   });
 
@@ -434,7 +434,7 @@ test.describe('Chrome Extension Tests', () => {
     await page.evaluate((rgb) => {
       const controls = document.querySelector('.text-highlighter-controls');
       const btn = Array.from(controls.querySelectorAll('.color-button')).find(b => getComputedStyle(b).backgroundColor === rgb);
-      if (btn) btn.click();
+      if (btn) {btn.click();}
     }, newColorRgb);
 
     // 색상 변경 확인 - Verify color change

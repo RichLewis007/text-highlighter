@@ -8,14 +8,10 @@ let currentColors = [];
 let minimapManager = null;
 
 // i18n support function
-function getMessage(key, substitutions = null) {
-  return browserAPI.i18n.getMessage(key, substitutions);
-}
-
 debugLog('Content script loaded for:', currentPageUrl);
 
 function normalizeUrlKey(urlString) {
-  if (!urlString) return '';
+  if (!urlString) {return '';}
   try {
     const url = new URL(urlString);
     if (url.protocol === 'file:') {
@@ -25,7 +21,7 @@ function normalizeUrlKey(urlString) {
       return `${url.protocol}//${url.pathname}`;
     }
     return `${url.origin}${url.pathname}`;
-  } catch (e) {
+  } catch (_e) {
     const noHash = urlString.split('#')[0];
     return noHash.split('?')[0];
   }
@@ -131,10 +127,11 @@ function saveHighlights() {
   );
 }
 
+/* exported removeHighlight, changeHighlightColor */
 function removeHighlight(highlightElement = null) {
   if (!highlightElement) {
     const selection = window.getSelection();
-    if (!selection.rangeCount) return;
+    if (!selection.rangeCount) {return;}
     const range = selection.getRangeAt(0);
     let node = range.commonAncestorContainer;
     while (node) {
@@ -168,7 +165,7 @@ function removeHighlight(highlightElement = null) {
 }
 
 function changeHighlightColor(highlightElement, newColor) {
-  if (!highlightElement) return;
+  if (!highlightElement) {return;}
   const groupId = highlightElement.dataset.groupId;
   // DOM의 모든 span 색상 변경 - Change color of all spans in the DOM
   const groupSpans = document.querySelectorAll(`.text-highlighter-extension[data-group-id='${groupId}']`);
@@ -218,7 +215,7 @@ function applyHighlights() {
 
 // Find text in document and apply highlight for a group of spans
 function highlightTextInDocument(element, spanInfos, color, groupId) {
-  if (!spanInfos || spanInfos.length === 0) return false;
+  if (!spanInfos || spanInfos.length === 0) {return false;}
 
   // 1. 텍스트 노드 수집 - Collect text nodes
   const walker = document.createTreeWalker(
@@ -230,7 +227,7 @@ function highlightTextInDocument(element, spanInfos, color, groupId) {
           return NodeFilter.FILTER_REJECT;
         }
         const parent = node.parentNode;
-        if (!parent) return NodeFilter.FILTER_REJECT;
+        if (!parent) {return NodeFilter.FILTER_REJECT;}
         if (parent.classList && parent.classList.contains('text-highlighter-extension')) {
           return NodeFilter.FILTER_REJECT;
         }
@@ -273,7 +270,7 @@ function highlightTextInDocument(element, spanInfos, color, groupId) {
     const searchText = firstText;
     const idx = nodeText.indexOf(searchText);
     if (idx !== -1) {
-      let range = document.createRange();
+      const range = document.createRange();
       range.setStart(node, idx);
       range.setEnd(node, idx + searchText.length);
       const rect = range.getBoundingClientRect();
@@ -300,7 +297,7 @@ function highlightTextInDocument(element, spanInfos, color, groupId) {
   // 3. 첫 span 하이라이트 적용 - Apply highlight for first span
   let currentNodeIdx = textNodes.indexOf(bestCandidate.node);
   let currentCharIdx = bestCandidate.idx;
-  let highlightSpans = [];
+  const highlightSpans = [];
   for (let s = 0; s < spanInfos.length; s++) {
     const spanInfo = spanInfos[s];
     const spanText = spanInfo.text;
@@ -309,18 +306,18 @@ function highlightTextInDocument(element, spanInfos, color, groupId) {
     for (; currentNodeIdx < textNodes.length; currentNodeIdx++) {
       const node = textNodes[currentNodeIdx];
       const nodeText = node.textContent;
-      let searchStart = (s === 0) ? currentCharIdx : 0;
+      const searchStart = (s === 0) ? currentCharIdx : 0;
       const idx = nodeText.indexOf(spanText, searchStart);
       if (idx !== -1) {
-        let range = document.createRange();
+        const range = document.createRange();
         range.setStart(node, idx);
         range.setEnd(node, idx + spanText.length);
         // 하이라이트 적용 - Apply highlight
         const span = document.createElement('span');
         span.className = 'text-highlighter-extension';
         span.style.backgroundColor = color;
-        if (groupId) span.dataset.groupId = groupId;
-        if (spanInfo.spanId) span.dataset.spanId = spanInfo.spanId;
+        if (groupId) {span.dataset.groupId = groupId;}
+        if (spanInfo.spanId) {span.dataset.spanId = spanInfo.spanId;}
         try {
           const contents = range.extractContents();
           span.appendChild(contents);
@@ -366,7 +363,7 @@ function addHighlightEventListeners(highlightElement) {
   // 그룹 전체에 hover 효과 - Apply hover effect to entire group
   highlightElement.addEventListener('mouseenter', function () {
     const groupId = highlightElement.dataset.groupId;
-    if (!groupId) return;
+    if (!groupId) {return;}
     const groupSpans = document.querySelectorAll(`.text-highlighter-extension[data-group-id='${groupId}']`);
     groupSpans.forEach(span => {
       span.classList.add('group-hover');
@@ -374,7 +371,7 @@ function addHighlightEventListeners(highlightElement) {
   });
   highlightElement.addEventListener('mouseleave', function () {
     const groupId = highlightElement.dataset.groupId;
-    if (!groupId) return;
+    if (!groupId) {return;}
     const groupSpans = document.querySelectorAll(`.text-highlighter-extension[data-group-id='${groupId}']`);
     groupSpans.forEach(span => {
       span.classList.remove('group-hover');
@@ -383,7 +380,7 @@ function addHighlightEventListeners(highlightElement) {
 }
 
 // Find text node by content
-function findTextNodeByContent(element, text) {
+function _findTextNodeByContent(element, text) {
   const walker = document.createTreeWalker(
     element,
     NodeFilter.SHOW_TEXT,
@@ -402,7 +399,7 @@ function findTextNodeByContent(element, text) {
 }
 
 // Get position of the first text node in highlight element
-function getFirstTextNodePosition(element) {
+function _getFirstTextNodePosition(element) {
   let firstTextNode = null;
   const walker = document.createTreeWalker(
     element,
@@ -456,7 +453,7 @@ function updateMinimapMarkers() {
 function convertSelectionRange(range) {
   const commonAncestor = range.commonAncestorContainer;
   const startContainer = range.startContainer;
-  const endContainer = range.endContainer;
+  const _endContainer = range.endContainer;
   
   // Check if common ancestor and start container are the same node
   if (commonAncestor === startContainer) {
@@ -490,7 +487,7 @@ function convertSelectionRange(range) {
 function highlightSelectedText(color) {
   const selection = window.getSelection();
   const selectedText = selection.toString();
-  if (selectedText.trim() === '') return;
+  if (selectedText.trim() === '') {return;}
 
   // Check if the selection overlaps with an existing highlight to prevent nesting.
   const rangeToCheck = selection.getRangeAt(0);
@@ -589,7 +586,7 @@ function processSelectionRange(range, color, groupId) {
   
   // Helper function to check if node is a block element
   function isBlockElement(node) {
-    if (node.nodeType !== Node.ELEMENT_NODE) return false;
+    if (node.nodeType !== Node.ELEMENT_NODE) {return false;}
     
     const blockTags = ['DIV', 'P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 
                       'SECTION', 'ARTICLE', 'HEADER', 'FOOTER', 'NAV', 
@@ -604,7 +601,7 @@ function processSelectionRange(range, color, groupId) {
   function shouldSkipNode(node) {
     if (node.nodeType === Node.ELEMENT_NODE) {
       const skipTags = ['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEXTAREA', 'INPUT'];
-      if (skipTags.includes(node.tagName)) return true;
+      if (skipTags.includes(node.tagName)) {return true;}
       
       // Skip if already highlighted
       if (node.classList && node.classList.contains('text-highlighter-extension')) {

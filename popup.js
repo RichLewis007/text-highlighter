@@ -11,8 +11,12 @@ const browserAPI = (() => {
   throw new Error('Neither browser nor chrome API is available');
 })();
 
+function getMessage(key, substitutions = null) {
+  return browserAPI.i18n.getMessage(key, substitutions);
+}
+
 function normalizeUrlKey(urlString) {
-  if (!urlString) return '';
+  if (!urlString) {return '';}
   try {
     const url = new URL(urlString);
     if (url.protocol === 'file:') {
@@ -22,7 +26,7 @@ function normalizeUrlKey(urlString) {
       return `${url.protocol}//${url.pathname}`;
     }
     return `${url.origin}${url.pathname}`;
-  } catch (e) {
+  } catch (_e) {
     const noHash = urlString.split('#')[0];
     return noHash.split('?')[0];
   }
@@ -50,7 +54,7 @@ function initializeI18n() {
 
   elements.forEach(element => {
     const key = element.getAttribute('data-i18n');
-    const message = browserAPI.i18n.getMessage(key);
+    const message = getMessage(key);
 
     if (message) {
       // Set the content based on element type
@@ -72,7 +76,7 @@ function initializeI18n() {
   const elementsWithTitle = document.querySelectorAll('[data-i18n-title]');
   elementsWithTitle.forEach(element => {
     const key = element.getAttribute('data-i18n-title');
-    const message = browserAPI.i18n.getMessage(key);
+    const message = getMessage(key);
     if (message) {
       element.title = message;
     }
@@ -117,12 +121,12 @@ function showConfirmModal(message) {
     // Create confirm button
     const confirmBtn = document.createElement('button');
     confirmBtn.className = 'modal-btn modal-confirm';
-    confirmBtn.textContent = browserAPI.i18n.getMessage('ok') || 'OK';
+    confirmBtn.textContent = getMessage('ok') || 'OK';
     
     // Create cancel button
     const cancelBtn = document.createElement('button');
     cancelBtn.className = 'modal-btn modal-cancel';
-    cancelBtn.textContent = browserAPI.i18n.getMessage('cancel') || 'Cancel';
+    cancelBtn.textContent = getMessage('cancel') || 'Cancel';
     
     buttonsDiv.appendChild(confirmBtn);
     buttonsDiv.appendChild(cancelBtn);
@@ -169,7 +173,7 @@ function showAlertModal(message) {
     // Create confirm button
     const confirmBtn = document.createElement('button');
     confirmBtn.className = 'modal-btn modal-confirm';
-    confirmBtn.textContent = browserAPI.i18n.getMessage('ok') || 'OK';
+    confirmBtn.textContent = getMessage('ok') || 'OK';
     
     buttonsDiv.appendChild(confirmBtn);
     content.appendChild(buttonsDiv);
@@ -242,7 +246,7 @@ document.addEventListener('DOMContentLoaded', async function () {
   async function loadHighlights() {
     const tab = await getActiveTab();
     const currentUrl = tab.url;
-    if (!currentUrl) return;
+    if (!currentUrl) {return;}
     const currentUrlKey = normalizeUrlKey(currentUrl);
     
     const response = await browserAPI.runtime.sendMessage({
@@ -250,7 +254,7 @@ document.addEventListener('DOMContentLoaded', async function () {
       urlKey: currentUrlKey,
       pageUrl: currentUrl
     });
-    let highlights = response?.highlights || [];
+    const highlights = response?.highlights || [];
 
     // 그룹 구조이므로 position은 대표 span의 position 사용 - Use representative span position due to group structure
     highlights.sort((a, b) => {
@@ -283,7 +287,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         const deleteBtn = document.createElement('span');
         deleteBtn.className = 'delete-btn';
         deleteBtn.textContent = '×';
-        deleteBtn.title = browserAPI.i18n.getMessage('removeHighlight');
+        deleteBtn.title = getMessage('removeHighlight');
         deleteBtn.addEventListener('click', function (e) {
           e.stopPropagation();
           deleteHighlight(group.groupId, currentUrlKey, currentUrl);
@@ -350,16 +354,12 @@ document.addEventListener('DOMContentLoaded', async function () {
   });
 
   // Delete highlight (그룹 단위) - Delete highlight by group
-  async function deleteHighlight(groupId, url) {
-  // Delete highlight (그룹 단위)
   async function deleteHighlight(groupId, urlKey, pageUrl) {
     const response = await browserAPI.runtime.sendMessage({
       action: 'deleteHighlight',
-      url: url,
       groupId: groupId, // groupId로 삭제 - Delete by groupId
       urlKey: urlKey,
       pageUrl: pageUrl,
-      groupId: groupId, // groupId로 삭제
       notifyRefresh: true
     });
     if (response && response.success) {
@@ -371,12 +371,12 @@ document.addEventListener('DOMContentLoaded', async function () {
   // Delete all highlights
   clearAllBtn.addEventListener('click', async function () {
     debugLog('Clearing all highlights');
-    const confirmMessage = browserAPI.i18n.getMessage('confirmClearAll');
+    const confirmMessage = getMessage('confirmClearAll');
     const confirmed = await showConfirmModal(confirmMessage);
     if (confirmed) {
       const tab = await getActiveTab();
       const currentUrl = tab.url;
-      if (!currentUrl) return;
+      if (!currentUrl) {return;}
       const currentUrlKey = normalizeUrlKey(currentUrl);
       
       const response = await browserAPI.runtime.sendMessage({
@@ -396,17 +396,17 @@ document.addEventListener('DOMContentLoaded', async function () {
   // Delete all custom colors
   deleteCustomColorsBtn.addEventListener('click', async function () {
     debugLog('Deleting all custom colors');
-    const confirmMessage = browserAPI.i18n.getMessage('confirmDeleteCustomColors') || 'Delete all custom colors?';
+    const confirmMessage = getMessage('confirmDeleteCustomColors') || 'Delete all custom colors?';
     const confirmed = await showConfirmModal(confirmMessage);
     if (confirmed) {
       const response = await browserAPI.runtime.sendMessage({ action: 'clearCustomColors' });
       if (response && response.success) {
         if (response.noCustomColors) {
           debugLog('No custom colors to delete');
-          await showAlertModal(browserAPI.i18n.getMessage('noCustomColorsToDelete') || 'No custom colors to delete.');
+          await showAlertModal(getMessage('noCustomColorsToDelete') || 'No custom colors to delete.');
         } else {
           debugLog('All custom colors deleted');
-          await showAlertModal(browserAPI.i18n.getMessage('deletedCustomColors') || 'Custom colors deleted.');
+          await showAlertModal(getMessage('deletedCustomColors') || 'Custom colors deleted.');
         }
       }
     }
@@ -429,7 +429,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             break;
           }
         }
-        if (found) break;
+        if (found) {break;}
       }
       if (!found) {
         browserAPI.windows.create({

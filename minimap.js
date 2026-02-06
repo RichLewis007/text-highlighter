@@ -1,6 +1,7 @@
 const DEBUG_MODE = false;
-const debugLog = DEBUG_MODE ? console.log.bind(console) : () => {};
+const _debugLog = DEBUG_MODE ? console.log.bind(console) : () => {};
 
+/* exported MinimapManager */
 class MinimapManager {
   constructor() {
     this.container = null;
@@ -16,7 +17,7 @@ class MinimapManager {
 
   // Initialize minimap
   init() {
-    if (this.container) return;
+    if (this.container) {return;}
 
     this.createContainer();
     this.setupObservers();
@@ -53,7 +54,7 @@ class MinimapManager {
 
   // Update minimap markers
   updateMarkers() {
-    if (!this.container) return;
+    if (!this.container) {return;}
     this.clearMarkers();
     // 그룹별로 대표 span만 마커로 표시 - Show only the representative span per group as a marker
     const highlightElements = document.querySelectorAll('.text-highlighter-extension');
@@ -144,7 +145,7 @@ class MinimapManager {
 
   // Update marker visibility (indicate highlights currently visible on screen)
   updateMarkerVisibility() {
-    if (!this.container || this.markers.length === 0) return;
+    if (!this.container || this.markers.length === 0) {return;}
 
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
     const windowHeight = window.innerHeight;
@@ -176,7 +177,7 @@ class MinimapManager {
 
   // Scroll to highlight
   scrollToHighlight(highlightElement) {
-    if (!highlightElement) return;
+    if (!highlightElement) {return;}
 
     const rect = highlightElement.getBoundingClientRect();
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
@@ -194,7 +195,7 @@ class MinimapManager {
 
   // Temporary emphasis effect for highlight
   highlightTemporarily(highlightElement) {
-    if (!highlightElement) return;
+    if (!highlightElement) {return;}
 
     const elementKey = highlightElement;
 
@@ -255,7 +256,7 @@ class MinimapManager {
 
   // Update minimap visibility
   updateVisibility() {
-    if (!this.container) return;
+    if (!this.container) {return;}
 
     // Only show minimap when highlights exist
     const highlightElements = document.querySelectorAll('.text-highlighter-extension');
@@ -272,7 +273,7 @@ class MinimapManager {
   // Throttling helper function (performance optimization)
   throttle(callback, delay) {
     return (...args) => {
-      if (this.throttleTimer) return;
+      if (this.throttleTimer) {return;}
 
       this.throttleTimer = setTimeout(() => {
         callback.apply(this, args);

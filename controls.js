@@ -1,4 +1,5 @@
 // Cross-browser compatibility - use chrome API in Chrome, browser API in Firefox
+/* exported showControlUi, setSelectionControlsVisibility, createHighlightWithColor */
 const browserAPI = (() => {
   if (typeof browser !== 'undefined') {
     return browser;
@@ -8,6 +9,10 @@ const browserAPI = (() => {
   }
   throw new Error('Neither browser nor chrome API is available');
 })();
+
+function getMessage(key, substitutions = null) {
+  return browserAPI.i18n.getMessage(key, substitutions);
+}
 
 // Highlight controller UI container
 let highlightControlsContainer = null;
@@ -39,7 +44,7 @@ function addJellyAnimation(btn) {
 
 // Create highlight controller UI
 function createHighlightControls() {
-  if (highlightControlsContainer) return;
+  if (highlightControlsContainer) {return;}
   highlightControlsContainer = document.createElement('div');
   highlightControlsContainer.className = 'text-highlighter-controls';
   const deleteButton = document.createElement('div');
@@ -149,7 +154,7 @@ function createColorPickerUI() {
   // 헤더 생성 - Create header
   const header = document.createElement('div');
   header.className = 'color-picker-header';
-  header.textContent = browserAPI.i18n.getMessage('selectColor');
+  header.textContent = getMessage('selectColor');
   customColorPicker.appendChild(header);
   
   // 색상 프리셋 그리드 생성 - Create color preset grid
@@ -214,11 +219,11 @@ function createColorPickerUI() {
   const applyButton = document.createElement('button');
   applyButton.className = 'color-picker-apply';
   applyButton.id = 'applyColor';
-  applyButton.textContent = browserAPI.i18n.getMessage('apply');
+  applyButton.textContent = getMessage('apply');
   
   const cancelButton = document.createElement('button');
   cancelButton.className = 'color-picker-close';
-  cancelButton.textContent = browserAPI.i18n.getMessage('cancel');
+  cancelButton.textContent = getMessage('cancel');
   
   buttonsSection.appendChild(applyButton);
   buttonsSection.appendChild(cancelButton);
@@ -349,7 +354,7 @@ function hsvToRgb(h, s, v) {
 // HSV 슬라이더 초기화 (재사용 가능한 함수) - Initialize HSV slider (reusable function)
 // RGB to Hex 변환 함수 - RGB to Hex conversion function  
 function rgbToHex(rgb) {
-  if (rgb.startsWith('#')) return rgb;
+  if (rgb.startsWith('#')) {return rgb;}
   
   // HSL 형식 처리 - Handle HSL format
   if (rgb.startsWith('hsl')) {
@@ -357,7 +362,7 @@ function rgbToHex(rgb) {
   }
   
   const match = rgb.match(/\d+/g);
-  if (!match) return '#FF6B6B';
+  if (!match) {return '#FF6B6B';}
   
   const r = parseInt(match[0]);
   const g = parseInt(match[1]);
@@ -372,18 +377,18 @@ function rgbToHex(rgb) {
 // HSL to Hex 변환 함수 - HSL to Hex conversion function
 function hslToHex(hsl) {
   const match = hsl.match(/\d+/g);
-  if (!match) return '#FF6B6B';
+  if (!match) {return '#FF6B6B';}
   
   const h = parseInt(match[0]) / 360;
   const s = parseInt(match[1]) / 100;
   const l = parseInt(match[2]) / 100;
   
   const hue2rgb = (p, q, t) => {
-    if (t < 0) t += 1;
-    if (t > 1) t -= 1;
-    if (t < 1/6) return p + (q - p) * 6 * t;
-    if (t < 1/2) return q;
-    if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+    if (t < 0) {t += 1;}
+    if (t > 1) {t -= 1;}
+    if (t < 1/6) {return p + (q - p) * 6 * t;}
+    if (t < 1/2) {return q;}
+    if (t < 2/3) {return p + (q - p) * (2/3 - t) * 6;}
     return p;
   };
   
@@ -538,9 +543,9 @@ function appendColorSeparator(container) {
 
 // -------- Helper: regenerate color buttons inside a container --------
 function refreshHighlightControlsColors() {
-  if (!highlightControlsContainer) return;
+  if (!highlightControlsContainer) {return;}
   const colorButtonsContainer = highlightControlsContainer.querySelector('.text-highlighter-color-buttons');
-  if (!colorButtonsContainer) return;
+  if (!colorButtonsContainer) {return;}
 
   // Clear existing buttons
   colorButtonsContainer.innerHTML = '';
@@ -563,7 +568,7 @@ function refreshHighlightControlsColors() {
 
 // Display highlight controller UI
 function showControlUi(highlightElement, e) {
-  if (!highlightControlsContainer) createHighlightControls();
+  if (!highlightControlsContainer) {createHighlightControls();}
 
   activeHighlightElement = highlightElement;
   highlightControlsContainer.style.top = `${window.scrollY + e.clientY - 40}px`;
@@ -601,7 +606,7 @@ function initializeSelectionControls() {
 
 // Handle mouse up event to detect text selection
 function handleSelectionMouseUp(e) {
-  if (!selectionControlsEnabled) return;
+  if (!selectionControlsEnabled) {return;}
   
   // Check if the click was on an existing highlight or control
   if (e.target.classList.contains('text-highlighter-extension') || 
@@ -635,7 +640,7 @@ function handleSelectionMouseUp(e) {
 
 // Handle selection change event
 function handleSelectionChange() {
-  if (!selectionControlsEnabled) return;
+  if (!selectionControlsEnabled) {return;}
   
   const selection = window.getSelection();
   const selectedText = selection.toString().trim();
@@ -712,12 +717,12 @@ function hideSelectionIcon() {
 
 // Show selection controls (reusing existing controls.js UI without delete button)
 function showSelectionControls(mouseX, mouseY) {
-  if (!currentSelection) return;
+  if (!currentSelection) {return;}
   
   hideSelectionControls(); // Remove any existing controls
   
   // Create a modified version of the existing highlight controls
-  if (!highlightControlsContainer) createHighlightControls();
+  if (!highlightControlsContainer) {createHighlightControls();}
   
   // Clone the existing controls container but modify it for selection mode
   selectionControlsContainer = highlightControlsContainer.cloneNode(true);
@@ -886,7 +891,7 @@ function createHighlightWithColor(color) {
 let globalClickListenerAdded = false;
 
 function addGlobalClickListener() {
-  if (globalClickListenerAdded) return;
+  if (globalClickListenerAdded) {return;}
   
   document.addEventListener('click', function (e) {
     // Handle existing highlight controls
@@ -907,7 +912,7 @@ function addGlobalClickListener() {
     }
 
     // Handle selection controls
-    if (!selectionControlsEnabled) return;
+    if (!selectionControlsEnabled) {return;}
     
     if (selectionIcon && !selectionIcon.contains(e.target)) {
       hideSelectionIcon();

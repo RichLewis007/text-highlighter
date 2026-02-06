@@ -19,7 +19,7 @@ export const test = base.extend({
     // for manifest v3:
     let [background] = context.serviceWorkers();
     if (!background)
-      background = await context.waitForEvent('serviceworker');
+      {background = await context.waitForEvent('serviceworker');}
 
     await use(background);
   },

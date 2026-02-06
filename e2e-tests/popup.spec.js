@@ -133,7 +133,7 @@ test.describe('Popup Tests', () => {
   });
 
 
-  test('selection icon 표시 테스트: 기본 비활성화 상태에서 선택 후 아이콘 없음 검증 - Selection icon display test: verify no icon when disabled by default', async ({ page, context, background, extensionId }) => {
+  test('selection icon 표시 테스트: 기본 비활성화 상태에서 선택 후 아이콘 없음 검증 - Selection icon display test: verify no icon when disabled by default', async ({ page, context: _context, background: _background, extensionId: _extensionId }) => {
     await page.goto(`file:///${path.join(__dirname, 'test-page.html')}`);
 
     const firstParagraph = page.locator('p').first();
@@ -146,7 +146,7 @@ test.describe('Popup Tests', () => {
     await expect(selectionIcon).toHaveCount(0);
   });
 
-  test('selection icon 표시 테스트: popup에서 활성화 후 선택 시 아이콘 표시 검증 - Selection icon display test: verify icon appears after enabling in popup', async ({ page, context, background, extensionId }) => {
+  test('selection icon 표시 테스트: popup에서 활성화 후 선택 시 아이콘 표시 검증 - Selection icon display test: verify icon appears after enabling in popup', async ({ page, context, background: _background, extensionId }) => {
     const popupPage = await context.newPage();
     await popupPage.goto(`chrome-extension://${extensionId}/popup.html`);
 
@@ -227,7 +227,7 @@ test.describe('Popup Tests', () => {
     await popupPage.close();
   });
 
-  test('selection icon을 이용한 highlight 동작 검증 - Verify highlight flow using selection icon', async ({ page, context, background, extensionId }) => {
+  test('selection icon을 이용한 highlight 동작 검증 - Verify highlight flow using selection icon', async ({ page, context, background: _background, extensionId }) => {
     // popup.html 로딩 후 selection-controls-toggle 체크 - After loading popup.html, check selection-controls-toggle
     const popupPage = await context.newPage();
     await popupPage.goto(`chrome-extension://${extensionId}/popup.html`);
